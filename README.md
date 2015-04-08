@@ -24,6 +24,34 @@ Or install it yourself as:
 require 'quick_store'
 ```
 
+### Configuration
+
+```ruby
+QuickStore.configure do |config|
+  config.file_path = 'path/to/store/file.yml'
+  config.key_separator = '|' # default is '/'
+end
+```
+
+### Storing and fetching data
+You can store and receive data from the store using different methods:
+
+```ruby
+# Using dynamic setters and getters
+QuickStore.store.arbitrary_key = 'value' # => "value"
+QuickStore.store.arbitrary_key           # => "value"
+
+# Using the ::set and ::get methods
+QuickStore.store.set(:arbitrary_key, 'value') # => "value"
+QuickStore.store.get(:arbitrary_key)          # => "value"
+
+# Example for a nested key ('/' is the default key separator)
+QuickStore.store.set('a/b/c', 'value') # => {"b"=>{"c"=>"value"}}
+QuickStore.store.get('a/b/c')          # => "value"
+QuickStore.store.get('a/b')            # => {"c"=>"value"}
+QuickStore.store.get('a')              # => {"b"=>{"c"=>"value"}}
+```
+
 ## Contributing
 
 1. Fork it ( https://github.com/[my-github-username]/quick_store/fork )
