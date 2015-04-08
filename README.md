@@ -1,5 +1,7 @@
 # QuickStore
 
+[![Gem Version](https://badge.fury.io/rb/quick_store.svg)](http://badge.fury.io/rb/quick_store)
+
 Simple local key-value store based on YAML::Store.
 
 ## Installation
