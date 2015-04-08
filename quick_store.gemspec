@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["paul.christoph.goetze@gmail.com"]
   spec.summary       = %q{Simple local key-value store based on YAML::Store.}
   spec.description   = %q{Simple local key-value store based on YAML::Store.}
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/daigaku-ruby/quick_store"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
