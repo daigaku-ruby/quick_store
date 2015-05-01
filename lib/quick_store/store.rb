@@ -45,7 +45,7 @@ module QuickStore
 
       old_value = get(base_key)
 
-      if old_value.is_a? Hash
+      if old_value.is_a?(Hash) && final_value.is_a?(Hash)
         updated_values = old_value ? old_value.deep_merge(final_value) : final_value
       else
         updated_values = final_value
@@ -73,47 +73,63 @@ module QuickStore
       base_key = keys.shift
 
       @db.transaction do
-       data = @db[base_key.to_s]
+        data = @db[base_key.to_s]
 
-       if data
-         keys.reduce(data) { |value, key| value ? value = value[key] : nil }
-       end
-     end
+        if data
+          keys.reduce(data) { |value, key| value ? value = value[key] : nil }
+        end
+      end
     end
 
-    def self.get(key)
-      instance.get(key)
+    def delete(key)
+      if key.to_s =~ Regexp.new(QuickStore.config.key_separator)
+        set(key, nil)
+      else
+        @db.transaction { @db.delete(key.to_s) }
+      end
     end
 
-    def self.set(key, value)
-      instance.set(key, value)
-    end
+    class << self
+      def get(key)
+        instance.get(key)
+      end
 
-    def self.file
-      instance.file
-    end
+      def set(key, value)
+        instance.set(key, value)
+      end
 
-    # Defines getter and setter methods for arbitrarily named methods.
-    #
-    #   QuickStore::Store.answer = 42 # saves 'answer: 42' to the store
-    #   # => 42
-    #
-    #   QuickStore::Store.answer
-    #   # => 42
-    def self.method_missing(method, *args, &block)
-      if method =~ /.*=$/
-        if singleton_methods.include?(method.to_s.chop.to_sym)
-          raise "There is a \"#{method.to_s.chop}\" instance method already " +
+      def file
+        instance.file
+      end
+
+      def delete(key)
+        instance.delete(key)
+      end
+
+      # Defines getter and setter methods for arbitrarily named methods.
+      #
+      #   QuickStore::Store.answer = 42 # saves 'answer: 42' to the store
+      #   # => 42
+      #
+      #   QuickStore::Store.answer
+      #   # => 42
+      def method_missing(method, *args, &block)
+        if method =~ /.*=$/
+          if singleton_methods.include?(method.to_s.chop.to_sym)
+            raise "There is a \"#{method.to_s.chop}\" instance method already " +
             "defined. This will lead to problems while getting values " +
             "from the store. Please use another key than " +
             "#{singleton_methods.map(&:to_s)}."
-        end
+          end
 
-        instance.set(method.to_s.gsub(/=$/, ''), args[0])
-      elsif args.count == 0
-        instance.get(method)
-      else
-        super
+          instance.set(method.to_s.gsub(/=$/, ''), args[0])
+        elsif method =~/\Adelete\_.*$/
+          instance.delete(method.to_s.gsub(/\Adelete\_/, ''))
+        elsif args.count == 0
+          instance.get(method)
+        else
+          super
+        end
       end
     end
   end
