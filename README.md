@@ -35,23 +35,34 @@ QuickStore.configure do |config|
 end
 ```
 
-### Storing and fetching data
-You can store and receive data from the store using different methods:
+### Storing, fetching, and deleting data
+You can store, receive, and remove data from the store by using different methods:
 
 ```ruby
 # Using dynamic setters and getters
-QuickStore.store.arbitrary_key = 'value' # => "value"
-QuickStore.store.arbitrary_key           # => "value"
+QuickStore.store.arbitrary_key = 'value'      # => "value"
+QuickStore.store.arbitrary_key                # => "value"
+QuickStore.store.delete_arbitrary_key         # => "value"
 
-# Using the ::set and ::get methods
+# Using the ::set, ::get, and ::delete methods
 QuickStore.store.set(:arbitrary_key, 'value') # => "value"
 QuickStore.store.get(:arbitrary_key)          # => "value"
+QuickStore.store.delete(:arbitrary_key)       # => "value"
 
 # Example for a nested key ('/' is the default key separator)
-QuickStore.store.set('a/b/c', 'value') # => {"b"=>{"c"=>"value"}}
-QuickStore.store.get('a/b/c')          # => "value"
-QuickStore.store.get('a/b')            # => {"c"=>"value"}
-QuickStore.store.get('a')              # => {"b"=>{"c"=>"value"}}
+QuickStore.store.set('a/b/c', 'value')        # => {"b"=>{"c"=>"value"}}
+
+QuickStore.store.get('a/b/c')                 # => "value"
+QuickStore.store.get('a/b')                   # => {"c"=>"value"}
+QuickStore.store.get('a')                     # => {"b"=>{"c"=>"value"}}
+
+# Removing data for a certain nested key
+QuickStore.store.delete('a/b/c')              # => {"b"=>{"c"=>nil}}
+QuickStore.get('a')                           # => {"b"=>{"c"=>nil}}
+
+# Removing data for all nested keys under a certain key
+QuickStore.store.delete('a')                  # => {"b"=>{"c"=>nil}}
+QuickStore.get('a')                           # => nil
 ```
 
 ## Contributing

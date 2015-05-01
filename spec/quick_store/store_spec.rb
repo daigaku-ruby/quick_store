@@ -27,6 +27,15 @@ describe QuickStore::Store do
     expect(QuickStore::Store.carrots).to eq "carrots"
   end
 
+  it "allows deleting arbitrary keys by dynamic delete" do
+    value = 'chips'
+    QuickStore::Store.potatoes_variation = value
+    expect(QuickStore::Store.potatoes_variation).to eq value
+
+    QuickStore::Store::delete_potatoes_variation
+    expect(QuickStore::Store.potatoes_variation).to be_nil
+  end
+
   it "returns nil for not set simple keys" do
     expect(QuickStore::Store.hamburger).to be_nil
   end
@@ -41,16 +50,10 @@ describe QuickStore::Store do
       .to raise_error NoMethodError
   end
 
-  it "responds to ::get" do
-    expect(QuickStore::Store).to respond_to :get
-  end
-
-  it "responds to ::set" do
-    expect(QuickStore::Store).to respond_to :set
-  end
-
-  it "responds to ::file" do
-    expect(QuickStore::Store).to respond_to :file
+  [:get, :set, :file, :delete].each do |method|
+    it "responds to ::#{method}" do
+      expect(QuickStore::Store).to respond_to method
+    end
   end
 
   describe "::get" do
@@ -100,6 +103,41 @@ describe QuickStore::Store do
   describe "::file" do
     it "returns the storage file path" do
       expect(QuickStore::Store.file).to eq QuickStore.config.file_path
+    end
+  end
+
+  describe "::delete" do
+    [:to_delete, 'to_delete'].each do |key|
+      it "removes the key from the store" do
+        statement = 'I really love deleting things!'
+
+        QuickStore.store.to_delete = statement
+        expect(QuickStore.store.to_delete).to eq statement
+
+        QuickStore.store.delete(:to_delete)
+        expect(QuickStore.store.to_delete).to be_nil
+      end
+    end
+
+    it "removes nested keys, but keeps other keys on same level" do
+      key = 'a/deeply/nested/key'
+      other_key = 'a/deeply/nested/other_key'
+      value = 'Such worth being deleted.'
+      other_value = 'Such worth being kept.'
+
+      QuickStore.store.set(key, value)
+      QuickStore.store.set(other_key, other_value)
+
+      expect(QuickStore.store.get(key)).to eq value
+      expect(QuickStore.store.get(other_key)).to eq other_value
+
+      QuickStore.store.delete(key)
+
+      expect(QuickStore.store.get(key)).to be_nil
+      expect(QuickStore.store.get(other_key)).to eq other_value
+
+      hash = { 'nested' => { 'key' => nil, 'other_key' => other_value } }
+      expect(QuickStore.store.get('a/deeply')).to eq hash
     end
   end
 
