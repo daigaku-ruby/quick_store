@@ -59,11 +59,11 @@ QuickStore.store.get('a')                     # => {"b"=>{"c"=>"value"}}
 
 # Removing data for a certain nested key
 QuickStore.store.delete('a/b/c')              # => {"b"=>{"c"=>nil}}
-QuickStore.get('a')                           # => {"b"=>{"c"=>nil}}
+QuickStore.store.get('a')                     # => {"b"=>{"c"=>nil}}
 
 # Removing data for all nested keys under a certain key
 QuickStore.store.delete('a')                  # => {"b"=>{"c"=>nil}}
-QuickStore.get('a')                           # => nil
+QuickStore.store.get('a')                     # => nil
 ```
 
 ## Contributing
