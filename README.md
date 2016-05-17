@@ -37,6 +37,7 @@ end
 ```
 
 ### Storing, fetching, and deleting data
+
 You can store, receive, and remove data from the store by using different methods:
 
 ```ruby
