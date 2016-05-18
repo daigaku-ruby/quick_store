@@ -1,5 +1,5 @@
+# Provides convenience helpers for the specs.
 module TestHelpers
-
   def file_path
     File.expand_path('../../test_files/store.yml', __FILE__)
   end
