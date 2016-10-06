@@ -1,4 +1,3 @@
-require 'active_support'
 require 'yaml/store'
 require 'fileutils'
 require 'singleton'
@@ -143,10 +142,26 @@ module QuickStore
 
     def updated_values(old_value, final_value)
       if old_value.is_a?(Hash) && final_value.is_a?(Hash)
-        old_value ? old_value.deep_merge(final_value) : final_value
+        deep_merge(old_value, final_value)
       else
         final_value
       end
+    end
+
+    def deep_merge(old_hash, new_hash)
+      final_hash = old_hash.dup
+
+      new_hash.each_pair do |key, other_value|
+        old_value = final_hash[key]
+
+        if old_value.is_a?(Hash) && other_value.is_a?(Hash)
+          final_hash[key] = deep_merge(old_value, other_value)
+        else
+          final_hash[key] = other_value
+        end
+      end
+
+      final_hash
     end
   end
 end
