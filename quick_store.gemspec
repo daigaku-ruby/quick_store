@@ -6,7 +6,7 @@ require 'quick_store/version'
 Gem::Specification.new do |spec|
   spec.name          = 'quick_store'
   spec.version       = QuickStore::VERSION
-  spec.required_ruby_version = '>= 1.9.3'
+  spec.required_ruby_version = '>= 2.2.0'
   spec.authors       = ['Paul Götze']
   spec.email         = ['paul.christoph.goetze@gmail.com']
   spec.summary       = 'Simple local key-value store based on YAML::Store.'
@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
 
-  spec.add_development_dependency 'bundler', '>= 1.6'
-  spec.add_development_dependency 'rake',    '~> 10.0'
+  spec.add_development_dependency 'bundler', '>= 1.7.13'
+  spec.add_development_dependency 'rake',    '~> 13.0'
   spec.add_development_dependency 'rspec',   '~> 3.0'
 end
