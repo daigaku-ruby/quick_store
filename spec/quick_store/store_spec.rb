@@ -12,7 +12,7 @@ describe QuickStore::Store do
       .to receive(:file_path)
       .and_return(nil)
 
-    expect { QuickStore::Store.send(:new) }.to raise_error
+    expect { QuickStore::Store.send(:new) }.to raise_error QuickStore::FilePathNotConfiguredError
   end
 
   it 'creates the store file in the given directory on access' do
@@ -144,6 +144,6 @@ describe QuickStore::Store do
   end
 
   it 'raises an error if the related getter for a setter is already defined' do
-    expect { QuickStore::Store.clone = 'defined' }.to raise_error
+    expect { QuickStore::Store.clone = 'defined' }.to raise_error QuickStore::NotAllowedKeyError
   end
 end

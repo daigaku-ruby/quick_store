@@ -51,18 +51,13 @@ module QuickStore
 
       def ensure_not_singleton_method!(key)
         return unless singleton_methods.include?(key.to_s.chop.to_sym)
-
-        raise "There is a \"#{key.to_s.chop}\" instance method already " \
-          'defined. This will lead to problems while getting values ' \
-          'from the store. Please use another key than ' \
-          "#{singleton_methods.map(&:to_s)}."
+        raise NotAllowedKeyError.new(key, singleton_methods.map(&:to_s))
       end
     end
 
     def initialize
       @file = QuickStore.config.file_path
-
-      raise(QuickStore::NO_FILE_PATH_CONFIGURED) unless @file
+      raise FilePathNotConfiguredError unless @file
 
       directory = File.dirname(@file)
       FileUtils.makedirs(directory) unless Dir.exist?(directory)
