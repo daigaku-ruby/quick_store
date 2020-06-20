@@ -1,12 +1,11 @@
 require 'quick_store/version'
+require 'quick_store/exceptions'
 require 'quick_store/configuration'
 require 'quick_store/store'
 
 # Allows configuring a YAML store and accessing the configured YAML store
 # through the .store method.
 module QuickStore
-  NO_FILE_PATH_CONFIGURED = 'Please configure a file_path for your QuickStore!'.freeze
-
   class << self
     attr_accessor :configuration
   end
@@ -19,7 +18,7 @@ module QuickStore
   #   end
   def self.configure
     yield(config) if block_given?
-    raise(NO_FILE_PATH_CONFIGURED) unless config.file_path
+    raise FilePathNotConfiguredError unless config.file_path
     config
   end
 
